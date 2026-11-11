@@ -1,5 +1,7 @@
 # randomized-sketching
 
+[![CI](https://github.com/John-Ferd/randomized-sketching/actions/workflows/ci.yml/badge.svg)](https://github.com/John-Ferd/randomized-sketching/actions/workflows/ci.yml) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+
 Solving a huge least-squares problem by first compressing it. This repo implements four randomized "sketches" in NumPy/SciPy: Gaussian projection, CountSketch, uniform row sampling, and leverage-score sampling. It measures how close sketch-and-solve gets to the exact answer, and checks the measurements against theory.
 
 ## In one paragraph
@@ -46,6 +48,18 @@ Problem size n = 20,000, d = 50. The table shows the median over 20 random sketc
 | Gaussian sketch + solve | 3.79 s | — |
 
 CountSketch touches each row of A once (O(nd)), so it is much cheaper than the exact solve. The Gaussian sketch is *slower* than solving exactly, because forming GA is a dense m × n by n × d product, O(nmd). Gaussian sketches are the easiest to analyse, but CountSketch is the one you would actually use.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A["tall problem<br/>min ‖Ax − b‖, A is n × d, n ≫ d"] --> S["apply sketch S (m × n)<br/>Gaussian · CountSketch ·<br/>uniform · leverage-score sampling"]
+  S --> SA["small problem<br/>min ‖SAx − Sb‖, m ≪ n"]
+  SA --> XS["sketched solution x̃"]
+  A --> XE["exact solution x*"]
+  XS --> E["excess error<br/>compared with theory"]
+  XE --> E
+```
 
 ## How it works
 
