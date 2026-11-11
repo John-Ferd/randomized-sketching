@@ -21,6 +21,7 @@ import numpy as np
 
 from sketching import SKETCHES, exact_lstsq, leverage_scores, relative_excess_residual, sketch_and_solve
 from sketching.data import coherent, incoherent
+from sketching.env import environment
 from sketching.least_squares import gaussian_theory
 from sketching.sketches import countsketch, gaussian, leverage_sampling
 
@@ -98,6 +99,7 @@ timing["countsketch_excess_residual"] = relative_excess_residual(
     A, b, sketch_and_solve(A, b, m, countsketch, np.random.default_rng(0)), x_star)
 res["timing"] = {"n": N, "d": d, "m": m, "seconds_best_of_3": timing}
 
+res["environment"] = environment()
 (out / "results.json").write_text(json.dumps(res, indent=2))
 
 # ---- print
